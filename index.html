@@ -231,8 +231,6 @@ const T = {
     fNamePh:       'Nguyễn Văn A',
     fEmail:        'Email sinh viên *',
     fEmailPh:      'email@student.edu.vn',
-    fMajor:        'Ngành học (tuỳ chọn)',
-    fMajorPh:      'VD: Kinh tế',
     fYear:         'Năm học *',
     fYearOpts:     ['Năm 1','Năm 2','Năm 3','Năm 4'],
     cancel:        'Huỷ',
@@ -247,7 +245,6 @@ const T = {
     footer:        '☕ <strong>Rujo Coffee House</strong> · TP. Hồ Chí Minh · Chiến dịch pop-up tại campus',
     times:         ['vừa xong','2 phút trước','5 phút trước','12 phút trước','27 phút trước','43 phút trước','1 giờ trước','2 giờ trước','4 giờ trước','6 giờ trước','Hôm qua','Hôm qua','2 ngày trước','3 ngày trước','4 ngày trước','1 tuần trước','1 tuần trước','2 tuần trước'],
     newTime:       'vừa xong',
-    majors:        ['Công nghệ thông tin','Kinh tế','Quản trị kinh doanh','Tài chính – Ngân hàng','Kế toán','Marketing','Kỹ thuật điện','Xây dựng','Kiến trúc','Ngôn ngữ Anh','Luật','Y khoa','Dược học','Báo chí – Truyền thông','Sư phạm'],
   },
   en: {
     badgeSuffix:   '+ students signed across Ho Chi Minh City',
@@ -266,8 +263,6 @@ const T = {
     fNamePh:       'Your full name',
     fEmail:        'Student Email *',
     fEmailPh:      'you@student.edu.vn',
-    fMajor:        'Major (optional)',
-    fMajorPh:      'e.g. Business',
     fYear:         'Year *',
     fYearOpts:     ['Year 1','Year 2','Year 3','Year 4'],
     cancel:        'Cancel',
@@ -282,7 +277,6 @@ const T = {
     footer:        '☕ <strong>Rujo Coffee House</strong> · Ho Chi Minh City · Campus Pop-Up Petition',
     times:         ['just now','2 minutes ago','5 minutes ago','12 minutes ago','27 minutes ago','43 minutes ago','1 hour ago','2 hours ago','4 hours ago','6 hours ago','yesterday','yesterday','2 days ago','3 days ago','4 days ago','1 week ago','1 week ago','2 weeks ago'],
     newTime:       'just now',
-    majors:        ['Computer Science','Economics','Business Administration','Finance & Banking','Accounting','Marketing','Electrical Engineering','Civil Engineering','Architecture','English Language','Law','Medicine','Pharmacy','Journalism','Education'],
   },
 };
 
@@ -339,8 +333,7 @@ function genSigners(uniId, count) {
     const sur    = SURNAMES[Math.floor(r() * SURNAMES.length)];
     const mid    = female ? MID_F[Math.floor(r() * MID_F.length)] : MID_M[Math.floor(r() * MID_M.length)];
     const given  = female ? GIVEN_F[Math.floor(r() * GIVEN_F.length)] : GIVEN_M[Math.floor(r() * GIVEN_M.length)];
-    const majorIdx = r() > 0.3 ? Math.floor(r() * T.vi.majors.length) : -1;
-    return { name:`${sur} ${mid} ${given}`, majorIdx, year:Math.floor(r()*4)+1, timeIdx:Math.min(i, times.length-1), isNew:false };
+    return { name:`${sur} ${mid} ${given}`, year:Math.floor(r()*4)+1, timeIdx:Math.min(i, times.length-1), isNew:false };
   });
 }
 
@@ -466,17 +459,11 @@ function renderForm() {
           <input type="email" id="f-email" placeholder="${t('fEmailPh')}" />
           <div class="form-error" id="e-email"></div>
         </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>${t('fMajor')}</label>
-            <input type="text" id="f-major" placeholder="${t('fMajorPh')}" />
-          </div>
-          <div class="form-group">
-            <label>${t('fYear')}</label>
-            <select id="f-year">
-              ${t('fYearOpts').map((o,i)=>`<option value="${i+1}">${o}</option>`).join('')}
-            </select>
-          </div>
+        <div class="form-group">
+          <label>${t('fYear')}</label>
+          <select id="f-year">
+            ${t('fYearOpts').map((o,i)=>`<option value="${i+1}">${o}</option>`).join('')}
+          </select>
         </div>
         <div class="form-actions">
           <button class="btn-cancel" onclick="cancelForm()">${t('cancel')}</button>
@@ -506,12 +493,10 @@ function submitForm() {
   if (!email||!email.includes('@')) { document.getElementById('e-email').textContent = t('errEmail'); ok=false; }
   if (!ok) return;
 
-  const major = document.getElementById('f-major').value.trim();
-  const year  = parseInt(document.getElementById('f-year').value);
-  const u     = currentUni;
+  const year = parseInt(document.getElementById('f-year').value);
+  const u    = currentUni;
 
-  // store with majorIdx=-2 (user-entered) and majorText
-  const signer = { name, majorText: major||null, year, isNew:true };
+  const signer = { name, year, isNew:true };
   addExtra(u.id, signer);
   setCount(u.id, getCount(u.id, u.base)+1);
   formState='done'; renderForm();
@@ -529,7 +514,6 @@ function renderSigners() {
   const extras = getExtra(u.id);
   const seed   = genSigners(u.id, u.base);
   const times  = T[lang].times;
-  const majors = T[lang].majors;
 
   document.getElementById('t-signers-title').textContent = t('signersTitle');
   const total = extras.length + seed.length;
@@ -540,23 +524,20 @@ function renderSigners() {
       <div class="signer-avatar" style="background:${avatarColor(s.name)}">${initials(s.name)}</div>
       <div style="flex:1;min-width:0">
         <div class="signer-name">${s.name}</div>
-        <div class="signer-meta">${s.majorText ? s.majorText+' · ':''} ${t('yearWord')} ${s.year}</div>
+        <div class="signer-meta">${t('yearWord')} ${s.year}</div>
       </div>
       <div class="signer-time">${t('newTime')}</div>
     </div>`).join('');
 
-  const seedHTML = seed.map(s => {
-    const majorText = s.majorIdx >= 0 ? majors[s.majorIdx % majors.length] : null;
-    return `
+  const seedHTML = seed.map(s => `
     <div class="signer-item">
       <div class="signer-avatar" style="background:${avatarColor(s.name)}">${initials(s.name)}</div>
       <div style="flex:1;min-width:0">
         <div class="signer-name">${s.name}</div>
-        <div class="signer-meta">${majorText ? majorText+' · ':''}${t('yearWord')} ${s.year}</div>
+        <div class="signer-meta">${t('yearWord')} ${s.year}</div>
       </div>
       <div class="signer-time">${times[s.timeIdx]}</div>
-    </div>`;
-  }).join('');
+    </div>`).join('');
 
   document.getElementById('signers-list').innerHTML = extraHTML + seedHTML;
 }
