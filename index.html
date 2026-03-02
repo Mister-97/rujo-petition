@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Rujo Coffee House — Campus Petition</title>
+<meta name="description" content="Sinh viên khắp TP. Hồ Chí Minh đang ký tên để mời Rujo Coffee House mở pop-up tại trường." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold:#D0A148;
+  --green:#1F4235;
+  --green2:#204234;
+  --bg:#ffffff;
+  --bg2:#f9f6f0;
+  --text:#111111;
+  --text2:#6b7280;
+  --text3:#9ca3af;
+  --border:#f0f0f0;
+  --r:20px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes countUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{animation:fadeUp .6s cubic-bezier(.16,1,.3,1) both}
+.d1{animation-delay:.05s}.d2{animation-delay:.1s}.d3{animation-delay:.15s}
+.d4{animation-delay:.2s}.d5{animation-delay:.25s}.d6{animation-delay:.3s}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:56px;padding:0 24px;
+  display:flex;align-items:center;
+  background:rgba(255,255,255,0.92);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid #f3f4f6;
+}
+.nav-inner{max-width:1100px;margin:0 auto;width:100%;display:flex;align-items:center}
+.nav-logo{font-weight:800;font-size:14px;color:var(--green);text-decoration:none;display:flex;align-items:center;gap:6px}
+
+/* ── PAGE VIEWS ── */
+#page-home,#page-uni{min-height:100vh}
+#page-uni{display:none}
+
+/* ── HERO ── */
+.hero{
+  padding:120px 24px 72px;
+  text-align:center;
+  background:linear-gradient(180deg,var(--bg2) 0%,var(--bg) 100%);
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:7px 16px;border-radius:100px;
+  background:#fffbf0;border:1.5px solid var(--gold);
+  color:var(--gold);font-size:12px;font-weight:700;
+  margin-bottom:24px;
+}
+.live-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;animation:pulse 2s ease-in-out infinite;display:inline-block}
+.hero h1{font-size:clamp(36px,7vw,64px);font-weight:900;letter-spacing:-2.5px;line-height:1.06;margin-bottom:20px}
+.hero h1 em{font-style:normal;color:var(--gold)}
+.hero p{font-size:clamp(15px,2.5vw,19px);color:var(--text2);line-height:1.7;max-width:520px;margin:0 auto 28px}
+.live-badge{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--text3)}
+
+/* ── GRID ── */
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--text3);text-align:center;margin-bottom:28px}
+.cards-section{max-width:1100px;margin:0 auto;padding:0 24px 96px}
+.cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+
+/* ── UNIVERSITY CARD ── */
+.uni-card{
+  background:#fff;border:1.5px solid var(--border);
+  border-radius:24px;padding:24px;cursor:pointer;
+  transition:transform .25s cubic-bezier(.16,1,.3,1),box-shadow .25s,border-color .25s;
+  text-decoration:none;display:block;
+}
+.uni-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.1);border-color:rgba(0,0,0,.1)}
+.card-bar{height:3px;width:40px;border-radius:100px;margin-bottom:20px;transition:width .3s}
+.uni-card:hover .card-bar{width:64px}
+.card-badge{display:inline-block;font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px;margin-bottom:12px}
+.card-name{font-size:13px;font-weight:700;line-height:1.4;margin-bottom:4px;color:var(--text)}
+.card-loc{font-size:12px;color:var(--text3);margin-bottom:18px}
+.card-count{font-size:32px;font-weight:900;letter-spacing:-1px;color:var(--green);line-height:1}
+.card-count-label{font-size:13px;color:var(--text2);margin-left:4px;font-weight:500}
+.card-bottom{margin-top:14px}
+.card-bar-track{height:5px;background:#f3f4f6;border-radius:100px;overflow:hidden;margin-bottom:10px}
+.card-bar-fill{height:100%;border-radius:100px;transition:width 1s cubic-bezier(.16,1,.3,1)}
+.card-cta{font-size:12px;font-weight:600}
+
+/* ── DETAIL PAGE ── */
+.detail-inner{max-width:680px;margin:0 auto;padding:96px 24px 96px}
+
+.detail-tag{display:inline-block;font-size:11px;font-weight:700;padding:5px 12px;border-radius:100px;margin-bottom:20px}
+.detail-title{font-size:clamp(26px,5vw,40px);font-weight:900;letter-spacing:-1.5px;line-height:1.1;margin-bottom:10px}
+.detail-sub{font-size:15px;color:var(--text2);margin-bottom:36px;line-height:1.65}
+
+/* count hero card */
+.count-card{
+  background:linear-gradient(135deg,var(--green),var(--green2));
+  border-radius:24px;padding:36px;text-align:center;margin-bottom:24px;
+}
+.count-card-label{font-size:13px;color:rgba(255,255,255,.55);font-weight:500;margin-bottom:8px}
+.count-card-num{font-size:72px;font-weight:900;letter-spacing:-3px;color:var(--gold);line-height:1;margin-bottom:6px}
+.count-card-sub{font-size:13px;color:rgba(255,255,255,.4)}
+
+/* form */
+.form-card{background:#fafafa;border:1.5px solid #efefef;border-radius:20px;padding:28px;margin-bottom:28px}
+.form-card h3{font-size:16px;font-weight:800;color:var(--green);margin-bottom:20px}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:6px}
+.form-group input,.form-group select{
+  width:100%;border:1.5px solid #e5e7eb;border-radius:12px;
+  padding:12px 14px;font-size:14px;font-family:inherit;
+  outline:none;background:#fff;color:var(--text);
+  transition:border-color .15s;
+}
+.form-group input:focus,.form-group select:focus{border-color:var(--gold)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-error{font-size:12px;color:#ef4444;margin-top:4px}
+.form-actions{display:flex;gap:10px;margin-top:20px}
+.btn-cancel{flex:1;padding:13px;border-radius:12px;border:1.5px solid #e5e7eb;background:#fff;font-size:14px;font-weight:600;color:#6b7280;cursor:pointer;font-family:inherit;transition:background .15s}
+.btn-cancel:hover{background:#f9f9f9}
+.btn-submit{flex:1;padding:13px;border-radius:12px;border:none;background:var(--green);font-size:14px;font-weight:700;color:#fff;cursor:pointer;font-family:inherit;transition:opacity .15s,transform .15s}
+.btn-submit:hover{opacity:.9;transform:translateY(-1px)}
+
+/* sign btn (before form opens) */
+.btn-sign{
+  width:100%;padding:18px;border-radius:18px;border:none;
+  background:linear-gradient(135deg,var(--green),var(--green2));
+  color:#fff;font-size:16px;font-weight:800;cursor:pointer;
+  font-family:inherit;margin-bottom:28px;
+  box-shadow:0 6px 24px rgba(31,66,53,.3);
+  transition:opacity .2s,transform .2s;
+}
+.btn-sign:hover{opacity:.92;transform:translateY(-2px)}
+
+/* success */
+.success-card{
+  background:#fffbf0;border:1.5px solid var(--gold);
+  border-radius:20px;padding:36px;text-align:center;margin-bottom:28px;
+}
+.success-icon{font-size:40px;margin-bottom:12px}
+.success-title{font-size:20px;font-weight:800;color:var(--green);margin-bottom:6px}
+.success-sub{font-size:14px;color:var(--text2)}
+
+/* signers list */
+.signers-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.signers-header h2{font-size:17px;font-weight:800;color:var(--text)}
+.signers-count-pill{font-size:12px;font-weight:600;padding:4px 12px;border-radius:100px;background:#f3f4f6;color:var(--text2)}
+.signer-item{
+  display:flex;align-items:center;gap:14px;padding:14px;
+  border-radius:16px;border:1px solid #f9f9f9;
+  background:#fff;margin-bottom:10px;
+  transition:background .15s,border-color .15s;
+}
+.signer-item:hover{background:#fafafa;border-color:#f0f0f0}
+.signer-item.new-signer{background:#fffbf0;border-color:rgba(208,161,72,.25)}
+.signer-avatar{
+  width:40px;height:40px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:13px;color:#fff;flex-shrink:0;
+}
+.signer-name{font-size:13.5px;font-weight:600;color:var(--text)}
+.signer-meta{font-size:12px;color:var(--text3);margin-top:2px}
+.signer-time{font-size:12px;color:var(--text3);margin-left:auto;flex-shrink:0}
+
+/* back btn */
+.back-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:13px;font-weight:600;color:var(--text2);
+  background:none;border:none;cursor:pointer;font-family:inherit;
+  padding:0;margin-bottom:32px;transition:color .15s;
+}
+.back-btn:hover{color:var(--text)}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid #f3f4f6;padding:32px 24px;text-align:center;font-size:13px;color:var(--text3)}
+footer strong{color:var(--green)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){.cards-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){
+  nav{padding:0 16px}
+  .hero{padding:96px 16px 56px}
+  .cards-section{padding:0 16px 72px}
+  .cards-grid{grid-template-columns:1fr}
+  .detail-inner{padding:84px 16px 72px}
+  .count-card-num{font-size:56px}
+  .form-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo" onclick="showHome(); return false;">☕ Rujo Coffee House</a>
+  </div>
+</nav>
+
+<!-- ══════════════════ HOME PAGE ══════════════════ -->
+<div id="page-home">
+
+  <div class="hero">
+    <div class="fade-up">
+      <div class="hero-badge" id="hero-badge">
+        <span class="live-dot"></span>
+        <span id="total-count">0</span>+ sinh viên đã ký tại TP. Hồ Chí Minh
+      </div>
+      <h1>Mời Rujo Coffee House<br><em>đến trường bạn</em> ☕</h1>
+      <p>Sinh viên khắp TP. Hồ Chí Minh đang ký tên để mời Rujo mở pop-up tại trường. Chọn trường của bạn và thêm tên vào danh sách.</p>
+      <div class="live-badge">
+        <span class="live-dot"></span>
+        Đang cập nhật trực tiếp
+      </div>
+    </div>
+  </div>
+
+  <section class="cards-section">
+    <p class="section-label">Chọn trường của bạn</p>
+    <div class="cards-grid" id="cards-grid"></div>
+  </section>
+
+  <footer>☕ <strong>Rujo Coffee House</strong> · TP. Hồ Chí Minh · Chiến dịch pop-up tại campus</footer>
+</div>
+
+<!-- ══════════════════ DETAIL PAGE ══════════════════ -->
+<div id="page-uni">
+
+  <div class="detail-inner">
+    <button class="back-btn" onclick="showHome()">← Quay lại</button>
+
+    <div id="detail-tag" class="detail-tag"></div>
+    <h1 class="detail-title" id="detail-title"></h1>
+    <p class="detail-sub" id="detail-sub">Sinh viên đang ký tên để mời Rujo Coffee House mở pop-up tại trường.</p>
+
+    <!-- Count hero -->
+    <div class="count-card fade-up">
+      <div class="count-card-label">Tổng số chữ ký</div>
+      <div class="count-card-num" id="detail-count">0</div>
+      <div class="count-card-sub" id="detail-count-sub"></div>
+    </div>
+
+    <!-- Form or success -->
+    <div id="form-area"></div>
+
+    <!-- Signers -->
+    <div class="signers-header">
+      <h2>Danh sách ký tên</h2>
+      <span class="signers-count-pill" id="signers-pill">0 người</span>
+    </div>
+    <div id="signers-list"></div>
+
+  </div>
+
+  <footer>☕ <strong>Rujo Coffee House</strong> · TP. Hồ Chí Minh · Chiến dịch pop-up tại campus</footer>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════
+//  DATA
+// ══════════════════════════════════════════════════
+const UNIVERSITIES = [
+  { id:'vnu',    name:'Vietnam National University Ho Chi Minh City',           short:'VNU-HCM',    loc:'Linh Trung, Thủ Đức',              base:112, color:'#1a5eb8' },
+  { id:'rmit',   name:'RMIT University Vietnam',                                short:'RMIT Vietnam',loc:'Quận 7, TP. Hồ Chí Minh',          base:94,  color:'#1F4235' },
+  { id:'ueh',    name:'Ho Chi Minh City University of Economics',               short:'UEH',        loc:'Quận 3, TP. Hồ Chí Minh',          base:83,  color:'#15803d' },
+  { id:'hcmus',  name:'Ho Chi Minh City University of Science',                 short:'HCMUS',      loc:'Quận 5, TP. Hồ Chí Minh',          base:76,  color:'#7c3aed' },
+  { id:'hutech', name:'Ho Chi Minh City University of Technology (HUTECH)',     short:'HUTECH',     loc:'Bình Thạnh, TP. Hồ Chí Minh',      base:89,  color:'#0369a1' },
+  { id:'tdtu',   name:'Ton Duc Thang University',                               short:'TDTU',       loc:'Quận 7, TP. Hồ Chí Minh',          base:67,  color:'#b45309' },
+];
+
+const GOAL = 120;
+
+const SURNAMES  = ['Nguyễn','Trần','Lê','Phạm','Hoàng','Huỳnh','Phan','Vũ','Võ','Đặng','Bùi','Đỗ','Hồ','Ngô','Dương','Lý','Đinh','Lưu','Đào','Vương','Trịnh','Hà','Thái','Cao','Tạ','Mai','Lâm','Tống','Tô','Điền'];
+const MID_M     = ['Văn','Hữu','Đức','Minh','Thành','Công','Quốc','Trung','Bảo','Nhật','Gia','Tuấn','Anh','Hải'];
+const MID_F     = ['Thị','Thúy','Ngọc','Kim','Thu','Mỹ','Phương','Thanh','Diễm','Hồng','Ngân','Bích','Khánh','Tuyết'];
+const GIVEN_M   = ['Minh','Tuấn','Hùng','Nam','Long','Phong','Quang','Anh','Khoa','Đạt','Hiếu','Duy','Hải','Kiên','Tài','Lâm','Phúc','Việt','Thiện','Khang','Bình','Hưng','Sơn','Tùng','Cường','Toàn','Nghĩa','Thắng','Trường','Phát'];
+const GIVEN_F   = ['Lan','Hoa','Linh','Mai','Trang','Hương','Thảo','Ly','Chi','Anh','Vy','Ngân','Nhi','Yến','Quỳnh','Như','Hạnh','Loan','Trinh','Châu','Trâm','Xuân','Cúc','Đào','Nhung','Phượng','Thủy','Bích','Lệ','Oanh'];
+const MAJORS    = ['Công nghệ thông tin','Kinh tế','Quản trị kinh doanh','Tài chính – Ngân hàng','Kế toán','Marketing','Kỹ thuật điện','Xây dựng','Kiến trúc','Ngôn ngữ Anh','Luật','Y khoa','Dược học','Báo chí – Truyền thông','Sư phạm'];
+const TIME_LABELS = ['vừa xong','2 phút trước','5 phút trước','12 phút trước','27 phút trước','43 phút trước','1 giờ trước','2 giờ trước','4 giờ trước','6 giờ trước','Hôm qua','Hôm qua','2 ngày trước','3 ngày trước','4 ngày trước','1 tuần trước','1 tuần trước','2 tuần trước'];
+
+// Seeded random — consistent names per uni per session
+function seedRng(seed) {
+  let s = seed;
+  return () => { s = (s * 1664525 + 1013904223) & 0xffffffff; return (s >>> 0) / 0xffffffff; };
+}
+
+function genSigners(uniId, count) {
+  const seed = uniId.split('').reduce((a,c) => a + c.charCodeAt(0), 0) * 31;
+  const r = seedRng(seed);
+  return Array.from({ length: count }, (_, i) => {
+    const female = r() > 0.48;
+    const sur    = SURNAMES[Math.floor(r() * SURNAMES.length)];
+    const mid    = female ? MID_F[Math.floor(r() * MID_F.length)] : MID_M[Math.floor(r() * MID_M.length)];
+    const given  = female ? GIVEN_F[Math.floor(r() * GIVEN_F.length)] : GIVEN_M[Math.floor(r() * GIVEN_M.length)];
+    return {
+      name: `${sur} ${mid} ${given}`,
+      major: r() > 0.3 ? MAJORS[Math.floor(r() * MAJORS.length)] : null,
+      year: Math.floor(r() * 4) + 1,
+      time: TIME_LABELS[Math.min(i, TIME_LABELS.length - 1)],
+      isNew: false,
+    };
+  });
+}
+
+// localStorage helpers
+function getCount(id, base) {
+  const v = localStorage.getItem('rujo_c_' + id);
+  return v ? parseInt(v) : base;
+}
+function setCount(id, n) { localStorage.setItem('rujo_c_' + id, n); }
+function getExtra(id) {
+  const v = localStorage.getItem('rujo_s_' + id);
+  return v ? JSON.parse(v) : [];
+}
+function addExtra(id, signer) {
+  const arr = getExtra(id);
+  arr.unshift(signer);
+  localStorage.setItem('rujo_s_' + id, JSON.stringify(arr));
+}
+
+// Avatar color from name
+function avatarColor(name) {
+  const h = (name.charCodeAt(0) * 37 + name.charCodeAt(1) * 13) % 360;
+  return `hsl(${h},50%,42%)`;
+}
+function initials(name) {
+  return name.split(' ').map(w => w[0]).slice(0,2).join('');
+}
+
+// ══════════════════════════════════════════════════
+//  RENDER HOME
+// ══════════════════════════════════════════════════
+function renderHome() {
+  const total = UNIVERSITIES.reduce((s, u) => s + getCount(u.id, u.base), 0);
+  document.getElementById('total-count').textContent = total;
+
+  const grid = document.getElementById('cards-grid');
+  grid.innerHTML = UNIVERSITIES.map((u, i) => {
+    const count = getCount(u.id, u.base);
+    const pct   = Math.min(100, Math.round(count / GOAL * 100));
+    const need  = GOAL - count;
+    return `
+      <div class="uni-card fade-up d${Math.min(i+1,6)}" onclick="showUni('${u.id}')">
+        <div class="card-bar" style="background:${u.color}"></div>
+        <span class="card-badge" style="background:${u.color}18;color:${u.color}">${u.short}</span>
+        <div class="card-name">${u.name}</div>
+        <div class="card-loc">${u.loc}</div>
+        <div style="display:flex;align-items:baseline;gap:4px;margin-top:16px">
+          <span class="card-count" data-target="${count}" data-uni="${u.id}">${count}</span>
+          <span class="card-count-label">chữ ký</span>
+        </div>
+        <div class="card-bottom">
+          <div class="card-bar-track">
+            <div class="card-bar-fill" style="width:${pct}%;background:linear-gradient(90deg,${u.color},#D0A148)"></div>
+          </div>
+          <div class="card-cta" style="color:${u.color}">${need > 0 ? `Cần thêm ${need} chữ ký` : 'Đã đạt mục tiêu! 🎉'} →</div>
+        </div>
+      </div>`;
+  }).join('');
+
+  // animate counters
+  grid.querySelectorAll('.card-count').forEach(el => {
+    const target = parseInt(el.dataset.target);
+    const start  = Math.max(0, target - 18);
+    const dur    = 900;
+    const step   = (target - start) / (dur / 16);
+    let cur = start;
+    const tick = setInterval(() => {
+      cur += step;
+      if (cur >= target) { el.textContent = target; clearInterval(tick); }
+      else el.textContent = Math.floor(cur);
+    }, 16);
+  });
+}
+
+// ══════════════════════════════════════════════════
+//  RENDER DETAIL
+// ══════════════════════════════════════════════════
+let currentUni = null;
+let formState  = 'button'; // 'button' | 'open' | 'done'
+
+function showUni(id) {
+  const u = UNIVERSITIES.find(x => x.id === id);
+  if (!u) return;
+  currentUni = u;
+  formState  = 'button';
+
+  document.getElementById('page-home').style.display = 'none';
+  document.getElementById('page-uni').style.display  = 'block';
+  window.scrollTo(0, 0);
+
+  // header
+  const tag = document.getElementById('detail-tag');
+  tag.textContent = `${u.short} · ${u.loc}`;
+  tag.style.background = u.color + '18';
+  tag.style.color       = u.color;
+  document.getElementById('detail-title').textContent = u.name;
+
+  renderDetail();
+}
+
+function renderDetail() {
+  const u     = currentUni;
+  const count = getCount(u.id, u.base);
+
+  // animate count
+  const numEl = document.getElementById('detail-count');
+  const start = Math.max(0, count - 15);
+  const dur   = 800;
+  const step  = (count - start) / (dur / 16);
+  let cur     = start;
+  numEl.textContent = start;
+  const tick  = setInterval(() => {
+    cur += step;
+    if (cur >= count) { numEl.textContent = count; clearInterval(tick); }
+    else numEl.textContent = Math.floor(cur);
+  }, 16);
+
+  document.getElementById('detail-count-sub').textContent = `sinh viên đã ký tên từ ${u.short}`;
+
+  renderForm();
+  renderSigners();
+}
+
+function renderForm() {
+  const area = document.getElementById('form-area');
+
+  if (formState === 'button') {
+    area.innerHTML = `<button class="btn-sign" onclick="openForm()">✍️ Ký tên vào danh sách</button>`;
+  } else if (formState === 'open') {
+    area.innerHTML = `
+      <div class="form-card">
+        <h3>Ký tên vào danh sách</h3>
+        <div class="form-group">
+          <label>Họ và tên *</label>
+          <input type="text" id="f-name" placeholder="Nguyễn Văn A" />
+          <div class="form-error" id="e-name"></div>
+        </div>
+        <div class="form-group">
+          <label>Email sinh viên *</label>
+          <input type="email" id="f-email" placeholder="email@student.edu.vn" />
+          <div class="form-error" id="e-email"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Ngành học (tuỳ chọn)</label>
+            <input type="text" id="f-major" placeholder="VD: Kinh tế" />
+          </div>
+          <div class="form-group">
+            <label>Năm học *</label>
+            <select id="f-year">
+              <option value="1">Năm 1</option>
+              <option value="2">Năm 2</option>
+              <option value="3">Năm 3</option>
+              <option value="4">Năm 4</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn-cancel" onclick="cancelForm()">Huỷ</button>
+          <button class="btn-submit" onclick="submitForm()">Ký tên →</button>
+        </div>
+      </div>`;
+  } else if (formState === 'done') {
+    area.innerHTML = `
+      <div class="success-card">
+        <div class="success-icon">☕</div>
+        <div class="success-title">Cảm ơn bạn đã ký tên!</div>
+        <div class="success-sub">Bạn đã giúp Rujo đến gần trường mình hơn một bước.</div>
+      </div>`;
+  }
+}
+
+function openForm()   { formState = 'open'; renderForm(); }
+function cancelForm() { formState = 'button'; renderForm(); }
+
+function submitForm() {
+  const name  = document.getElementById('f-name').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  let ok = true;
+
+  document.getElementById('e-name').textContent  = '';
+  document.getElementById('e-email').textContent = '';
+
+  if (!name)  { document.getElementById('e-name').textContent  = 'Vui lòng nhập họ tên.'; ok = false; }
+  if (!email || !email.includes('@')) { document.getElementById('e-email').textContent = 'Email không hợp lệ.'; ok = false; }
+  if (!ok) return;
+
+  const major = document.getElementById('f-major').value.trim();
+  const year  = parseInt(document.getElementById('f-year').value);
+  const u     = currentUni;
+
+  const signer = { name, major: major || null, year, time: 'vừa xong', isNew: true };
+  addExtra(u.id, signer);
+  setCount(u.id, getCount(u.id, u.base) + 1);
+
+  formState = 'done';
+  renderForm();
+
+  // update count display
+  const countEl = document.getElementById('detail-count');
+  const newCount = getCount(u.id, u.base);
+  countEl.style.animation = 'countUp .4s cubic-bezier(.16,1,.3,1) both';
+  countEl.textContent = newCount;
+  setTimeout(() => countEl.style.animation = '', 500);
+
+  renderSigners();
+}
+
+function renderSigners() {
+  const u      = currentUni;
+  const extras = getExtra(u.id);
+  const seed   = genSigners(u.id, u.base);
+  const all    = [...extras, ...seed];
+
+  document.getElementById('signers-pill').textContent = `${all.length} người`;
+
+  document.getElementById('signers-list').innerHTML = all.map(s => `
+    <div class="signer-item${s.isNew ? ' new-signer' : ''}">
+      <div class="signer-avatar" style="background:${avatarColor(s.name)}">${initials(s.name)}</div>
+      <div style="flex:1;min-width:0">
+        <div class="signer-name">${s.name}</div>
+        <div class="signer-meta">${s.major ? s.major + ' · ' : ''}Năm ${s.year}</div>
+      </div>
+      <div class="signer-time">${s.time}</div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════════════
+//  NAVIGATION
+// ══════════════════════════════════════════════════
+function showHome() {
+  document.getElementById('page-uni').style.display  = 'none';
+  document.getElementById('page-home').style.display = 'block';
+  window.scrollTo(0, 0);
+  renderHome();
+}
+
+// Hash routing
+function handleHash() {
+  const h = location.hash;
+  if (h.startsWith('#/uni/')) {
+    const id = h.replace('#/uni/', '');
+    showUni(id);
+  } else {
+    showHome();
+  }
+}
+
+window.addEventListener('hashchange', handleHash);
+document.addEventListener('DOMContentLoaded', () => { renderHome(); handleHash(); });
+</script>
+</body>
+</html>
